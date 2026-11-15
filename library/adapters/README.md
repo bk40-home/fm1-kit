@@ -25,15 +25,18 @@ firmware's repo, sets `FK.adapter` before `core.js` runs, and `FK.mockDevice` fo
 | `parseFile(name, bytes)` | `[patch, ...]` from one file (a bank file may hold many), or `null` if not a patch file |
 | `fileName(p, slot)` | The file a slot is written as in a zip (`"012.sy1"`) |
 | `serialise(p)` | `Uint8Array`: the file the synth itself opens |
+| `bankFile(slots)` | Optional (0.2.0): `{name, bytes}`, the whole bank as one file for Download (else a zip of `serialise`d patches); null to fall back |
 | `describe(p)` | Optional: a short line for the details panel |
 | `preview(p)` | `{filter: {label, kind: "lp"/"hp"/"bp", order: 2/4, freq: 0..1, res: 0..1}, env: {a, d, s, r: 0..1}, facts: [[label, value]]}` |
 | `factory()` | `[{name, slots}]`: banks built into the page (shown as read-only sources) |
 | `device.identify(io)` | `{product, version}` |
 | `device.read(io, bank, size, onProgress)` | The bank's slots: patch or `null` |
 | `device.readSlot(io, bank, slot)` | One slot (the read-back after a send) |
-| `device.write(io, bank, slot, p)`, `device.clear(io, bank, slot)` | Resolve when the device has it; throw with a reason |
+| `device.write(io, bank, slot, p)`, `device.clear(io, bank, slot)` | Resolve when the device has it; throw with a reason. No `clear` (0.2.0): the device's slots are never empty, and Del is refused |
 | `device.audition(io, p)` | Plays it now, saves nothing |
 | `mock()` | A pretend device: an `io` |
+| `theme` | Optional (0.2.0): the theme a first visit shows (`"amber"`); else SEA |
+| `actions` | Optional (0.2.0): `[{label, title, run(p, ref, where)}]`, buttons beside Audition in the details panel. `ref` names the slot (`{dev: bank, s}` or `{src: id, s}`; null in All sources); `FK.lib.putAt(ref, p)` later puts a patch back there as an ordinary change (a device slot: pending until Send, undoable) and returns `""`, or the reason it could not |
 
 ## `io`
 

@@ -537,6 +537,7 @@
   }
   function clearSlots(idx) {
     if (!idx.length) return;
+    if (!A.device.clear) { say("A slot on the " + A.deviceName + " always holds a patch: drop another one on it instead", "bad"); return; }
     const ch = new Map(idx.map(i => [i, null]));
     changeDev(S.devTab, ch, "Cleared " + idx.length);
   }
@@ -753,7 +754,9 @@
     const bd = bankDef(S.devTab), v = devView(S.devTab), files = [];
     v.forEach((p, s) => { if (p) files.push({name: A.fileName(p, s), data: A.serialise(p)}); });
     if (!files.length) { say(bd.name + " is empty", "bad"); return; }
-    download(A.id + "-" + bd.name + ".zip", FK.zip(files));
+    const one = A.bankFile && A.bankFile(v);      /* (0.2.0) the adapter's own whole-bank file, when it has one */
+    if (one) download(A.id + "-" + bd.name + "-" + one.name, one.bytes);
+    else download(A.id + "-" + bd.name + ".zip", FK.zip(files));
     say("Downloaded " + bd.name + " (" + files.length + " patches" + (S.pend.count(S.devTab) ? ", with the changes not yet sent" : "") + ")");
   }
   function exportLibrary() {
@@ -785,6 +788,28 @@
       S.sources[S.srcTab].slots[i] = np; touch(S.sources[S.srcTab]); save(); render();
     } else changeDev(S.devTab, new Map([[i, np]]), "Changed " + bankDef(S.devTab).name + " " + FK.slotName(i));
   }
+  /* a slot, by what it is rather than what is shown now (0.2.0: an adapter's action puts a patch back later, after
+   * the tabs may have changed): {dev: bank, s} or {src: source id, s}; null for the "All sources" list */
+  function refOf(pane, i) {
+    if (pane === "dev") return {dev: S.devTab, s: i};
+    return S.srcTab === "all" || !S.sources[S.srcTab] ? null : {src: S.sources[S.srcTab].id, s: i};
+  }
+  /* put np into that slot as an ordinary change (a device slot: pending until Send, undoable). The reason when not */
+  function putAt(ref, np) {
+    if (!ref) return "that patch was picked in All sources: pick it from its own bank";
+    if (ref.dev != null) {
+      if (bankDef(ref.dev).readOnly) return bankDef(ref.dev).name + " is read only";
+      changeDev(ref.dev, new Map([[ref.s, np]]), "Put " + A.nameOf(np) + " into " + bankDef(ref.dev).name + " " + FK.slotName(ref.s));
+      return "";
+    }
+    const src = S.sources.find(x => x.id === ref.src);
+    if (!src) return "that bank was closed";
+    if (src.kind === "factory") return src.name + " is built in (read only): drag the patch into a bank first";
+    src.slots[ref.s] = np; touch(src); save(); render();
+    say("Put " + A.nameOf(np) + " into " + src.name + " " + FK.slotName(ref.s));
+    return "";
+  }
+  FK.lib = {putAt, say: (t, k) => say(t, k)};
   function setMeta(p, fn) {
     const k = fp(p), m = S.meta[k] || {cat: catOf(p), tags: tagsOf(p).slice()};
     fn(m);
@@ -807,6 +832,7 @@
     $("#d-where").textContent = where + (A.describe ? " · " + A.describe(p) : "");
     const cs = $("#d-colours");
     cs.replaceChildren();
+    cs.hidden = cs.previousElementSibling.hidden = A.colours.length < 2;   /* (one colour: nothing to pick) */
     for (const c of A.colours) {
       const b = document.createElement("button");
       b.type = "button";
@@ -889,10 +915,10 @@
     document.title = A.name + " library";
     $("#app-name").textContent = A.name;
     $("#dev-label").textContent = A.deviceName;
-    const themes = ["sea", "ember", "ice", "orchid", "crt", "paper"];
+    const themes = ["sea", "ember", "ice", "orchid", "crt", "paper", "amber"];   /* (amber: M-vance's screen, 0.2.0) */
     const th = $("#theme");
     th.replaceChildren(...themes.map(t => new Option(t.toUpperCase(), t)));
-    th.value = themes.includes(pref("theme")) ? pref("theme") : "sea";
+    th.value = themes.includes(pref("theme")) ? pref("theme") : (themes.includes(A.theme) ? A.theme : "sea");
     document.documentElement.dataset.theme = th.value;
     th.onchange = () => { document.documentElement.dataset.theme = th.value; pref("theme", th.value); render(); };
     const cats = $("#cats");
@@ -965,6 +991,12 @@
       e.target.value = "";
     });
     $("#d-play").onclick = () => { const {p} = focused(); if (p) audition(p); };
+    for (const act of A.actions || []) {         /* the adapter's buttons (0.2.0): run(patch, ref, where) */
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = act.label; if (act.title) b.title = act.title;
+      b.onclick = () => { const {pane, i, p} = focused(); if (p) act.run(p, refOf(pane, i), $("#d-where").textContent); };
+      $("#d-play").parentNode.appendChild(b);
+    }
     bindGrid($("#src-grid"), "src");
     bindGrid($("#dev-grid"), "dev");
     bindDeviceDrop($("#dev-grid"));
