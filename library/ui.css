@@ -94,6 +94,8 @@ main { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 .cell .num { color: var(--dim); font-variant-numeric: tabular-nums; flex: none; font-size: 11px; }
 .cell .stripe { width: 3px; height: 13px; border-radius: 1px; flex: none; }
 .cell .nm { flex: none; }
+.cell .nm-edit { flex: 1; min-width: 0; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--accent);
+  border-radius: 3px; padding: 0 3px; margin: -1px 0; outline: none; }
 .cell.empty .num, .cell.empty .nm { color: var(--line); }
 .cell:hover:not(.empty) { background: var(--raised); }
 .cell.dim { opacity: 0.32; }
