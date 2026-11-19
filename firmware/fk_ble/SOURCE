@@ -1,0 +1,3 @@
+# Where stack/ and chip/ come from (tools/sync.sh reads this). Change the commits, run tools/sync.sh, run the tests.
+fm1-base     https://github.com/charlesvestal/fm1-base   7337375c15e9db26f23b0c68a1db61429add2f48   bt/ble/*.c bt/ble/*.h -> stack/
+felucca-bsp  (fm1-base's bsp submodule)                  2a5af3dfc8bccb92e37d48a3e7e0bf9a5827e51f   chip/fm1_ble.h fm1_ble_rf.h fm1_rf_cal.h ble_rf_tables_v15.h NOTICE -> chip/

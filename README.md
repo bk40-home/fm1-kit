@@ -13,16 +13,11 @@ cd third_party/fm1-kit && git init && git add . && git commit -m "fm1-kit 0.1.0:
 git rm -r --cached third_party/fm1-kit && git submodule add <url> third_party/fm1-kit
 ```
 
-## The library page, 0.3.1 (17 Nov 2026)
+## Bluetooth MIDI, firmware/fk_ble (19 Nov 2026)
 
-- **Connect finds the FM-1** (M-Vsynth2 issue #2, Windows 11): every live MIDI input is asked who it is, the likely
-  names first (`portMatch`, then "Felucca", the FM-1 firmwares' USB name), each with its own output. It used to take
-  the first port when `portMatch` missed: on Windows the GS Wavetable Synth, and the FM-1 "did not answer". Ports
-  left "disconnected" by a restart or an install are skipped; a port another program or tab holds (Windows: one at a
-  time) is named; Disconnect closes the ports; the page lets go when the device goes away.
-- **Rename in place** (M-Vsynth2 issue #4): double-click a patch's name in either grid, or F2 on the focused slot;
-  Enter or clicking away keeps it, Esc drops it. A device slot becomes a change pending until Send (undoable), a bank
-  of your own changes at once, a read-only bank says so. Double-click elsewhere on a slot still auditions it.
+A drop-in module for the firmwares themselves (C, built into `platform.c`): Bluetooth MIDI on fm1-base's own BLE
+stack, with no JieLi library. M-Vsynth2 and M-vance use it. See `firmware/fk_ble/README.md`. Its files are MPL-2.0 and
+Apache-2.0 (each file's header), not this folder's GPL-3.0.
 
 ## The library page, 0.3.0 (15 Nov 2026)
 
