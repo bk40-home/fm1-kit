@@ -1,0 +1,4 @@
+# Where touch.c, touch.h, sense.c and fastmath.h come from, unchanged (tests/run.sh with FM1_BASE= checks them).
+fm1-base     https://github.com/charlesvestal/fm1-base   2bb8e74f2962475eeeefd5179420bd8d73a3da6c   lib/touch.c lib/touch.h lib/sense.c include/fastmath.h -> ./
+# The scan's side (the analog key rows) is in each firmware's hal/fm1_input_an.h, from felucca-bsp boards/fm1/fm1_input.h:
+felucca-bsp  https://github.com/hugelton/felucca-bsp   2bd9dbe1fcbb8c67ba6721b2435f3fb0597a202a   boards/fm1/fm1_input.h (analog rows), fm1_adc.h

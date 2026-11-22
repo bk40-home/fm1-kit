@@ -19,6 +19,13 @@ A drop-in module for the firmwares themselves (C, built into `platform.c`): Blue
 stack, with no JieLi library. M-Vsynth2 and M-vance use it. See `firmware/fk_ble/README.md`. Its files are MPL-2.0 and
 Apache-2.0 (each file's header), not this folder's GPL-3.0.
 
+## Velocity and pressure, firmware/fk_touch (22 Nov 2026)
+
+A drop-in module for the firmwares: velocity on all 27 keys and pressure on F3 to C5, from the FM-1's own keys,
+with fm1-base's sensing (`touch.c`, `sense.c`) unchanged. The firmware's `hal/` needs the analog key rows
+(`fm1_input_an.h`, from felucca-bsp). M-Vsynth2 uses it first; M-vance follows. See `firmware/fk_touch/README.md`. Its
+files are MPL-2.0 (each file's header), not this folder's GPL-3.0.
+
 ## The library page, 0.3.0 (15 Nov 2026)
 
 - **Save…** on both panes: the bank shown as one file (the adapter's `bankFile`, else a zip). Download is now Save….
