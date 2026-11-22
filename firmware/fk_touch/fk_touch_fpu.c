@@ -24,6 +24,8 @@ void fk_plat_sense(int on);               /* fk_touch.c: the scan reads the anal
 #define PLAT_HOST 1                       /* touch.c's key model: app_host_key, app_host_tick */
 #endif
 
+/* its buffers (about 2.8 KB, all zero at start) are this object's .bss: a firmware whose RAM is full places them
+ * from its linker script (M-vance's app.ld puts fk_touch_fpu.o's .bss in .pool) */
 #include "touch.h"
 /* fm1-base's files as they are: helpers this build does not call (the calibration's save and load, the raw
  * aftertouch), and two of its comparisons that gcc's -Wextra asks to be cast, are theirs to change, not ours */

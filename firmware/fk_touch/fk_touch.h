@@ -46,15 +46,16 @@
     (FM1_KEYMAP[rowbit][col] >= 14 ? app_key_probe(FK_TOUCH_KEY_OF(col, rowbit), (v), (pressed)) : (void)0)
 #define FM1_INPUT_LED_OK(col, rowbit) (FM1_KEYMAP[rowbit][col] < 14 || app_key_led_ok(FK_TOUCH_KEY_OF(col, rowbit)))
 
-static void fk_touch_enable(int on);
-static int fk_touch_on(void);
-static void fk_touch_set(int curve, int sens);
-static void fk_touch_poll(void);
-static uint32_t fk_touch_keys(void);
-static uint32_t fk_touch_vel(uint32_t key);
-static uint32_t fk_touch_pressure(uint32_t key);
-static uint32_t fk_touch_channel_pressure(void);
-static uint32_t fk_touch_last_vel(void);
+#define FK_TOUCH_API static __attribute__((unused))   /* (an app may use only some of them) */
+FK_TOUCH_API void fk_touch_enable(int on);
+FK_TOUCH_API int fk_touch_on(void);
+FK_TOUCH_API void fk_touch_set(int curve, int sens);
+FK_TOUCH_API void fk_touch_poll(void);
+FK_TOUCH_API uint32_t fk_touch_keys(void);
+FK_TOUCH_API uint32_t fk_touch_vel(uint32_t key);
+FK_TOUCH_API uint32_t fk_touch_pressure(uint32_t key);
+FK_TOUCH_API uint32_t fk_touch_channel_pressure(void);
+FK_TOUCH_API uint32_t fk_touch_last_vel(void);
 #ifdef DINGHY_HOST
 static void fk_touch_host_key(uint32_t k, uint32_t vel, uint32_t press);
 static void fk_touch_host_tick(void);

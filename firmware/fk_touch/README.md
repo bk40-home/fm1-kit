@@ -30,6 +30,9 @@ copied unchanged; this module only adds the glue. The firmware is not moved onto
   velocity is worked out in the scan's interrupt, with the FPU. fm1-base does the same on this chip, with an
   interrupt entry identical to Dinghy's (felucca-bsp `chip/fm1_isr.S`), and builds everything, its audio interrupt
   included, with the FPU's flags.
+- **RAM:** about 2.8 KB of buffers, all zero at start, plus 36 B of settings in `.data`. In `.bss` by default (M-Vsynth2).
+  They are all `fk_touch_fpu.o`'s, so a firmware whose 96 KB RAM is full places them from its linker script:
+  M-vance's `app.ld` excludes that object from `.bss` and puts its `.bss` in `.pool` (zeroed at boot like `.bss`).
 - **Key LEDs:** while a sensed key is held, its column's LEDs are dark for the ticks that read it. A lit key may look a
   little dimmer while TOUCH is on.
 
